@@ -81,7 +81,7 @@ func main() {
 
 	vulnerabilities, err := executeScan(conf)
 	if err != nil {
-		errMsg := fmt.Errorf("Failed to execute scan: %w", err)
+		errMsg := fmt.Errorf("failed to execute scan: %w", err)
 		log.Error(errMsg)
 		result.ScanErr = errMsg
 		exit(2, conf, result)
