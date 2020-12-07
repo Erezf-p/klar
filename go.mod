@@ -1,4 +1,4 @@
-module github.com/Erezf-p/klar
+module github.com/Portshift/klar
 
 go 1.13
 
