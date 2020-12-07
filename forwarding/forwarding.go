@@ -15,7 +15,7 @@ type ImageVulnerabilities struct {
 	Image           string                 `json:"image"`
 	Success         bool                   `json:"success"`
 	ScanUUID        string                 `json:"scanuuid"`
-	ScanErrMsg      string                 `json:"scanErrMsg"`
+	ScanErr         error                  `json:"scanErr"`
 }
 
 func SendScanResults(resultServicePath string, scanResults *ImageVulnerabilities) error {

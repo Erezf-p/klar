@@ -33,7 +33,7 @@ func executeScan(conf *config) ([]*clair.Vulnerability, error) {
 
 	err = image.Pull()
 	if err != nil {
-		return nil, fmt.Errorf("failed to pull image: %v", err)
+		return nil, fmt.Errorf("failed to pull image: %w", err)
 	}
 
 	if len(image.FsLayers) == 0 {
@@ -81,9 +81,9 @@ func main() {
 
 	vulnerabilities, err := executeScan(conf)
 	if err != nil {
-		errStr := fmt.Sprintf("Failed to execute scan: %v", err)
-		log.Errorf(errStr)
-		result.ScanErrMsg = errStr
+		errMsg := fmt.Errorf("Failed to execute scan: %w", err)
+		log.Error(errMsg)
+		result.ScanErr = errMsg
 		exit(2, conf, result)
 	}
 

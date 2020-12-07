@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/Portshift/klar/docker/token"
 	"github.com/containers/image/v5/docker/reference"
@@ -261,13 +262,20 @@ func (i *Image) Pull() error {
 	}
 
 	if err := parseImageResponse(resp, i); err != nil {
-		return fmt.Errorf("failed to parse image response. request url=%s: %v", i.getPullReqUrl(), err)
+		return fmt.Errorf("failed to parse image response. request url=%s: %w", i.getPullReqUrl(), err)
 	}
 
 	return nil
 }
 
+var ErrorUnauthorized = errors.New("unauthorized")
+
 func parseImageResponse(resp *http.Response, image *Image) error {
+	switch resp.StatusCode {
+	case http.StatusUnauthorized:
+		return ErrorUnauthorized
+	}
+
 	switch contentType := resp.Header.Get("Content-Type"); contentType {
 	case "application/vnd.docker.distribution.manifest.v2+json":
 		var imageV2 imageV2
