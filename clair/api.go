@@ -3,6 +3,7 @@ package clair
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -43,6 +44,8 @@ func (a *apiV1) Push(image *docker.Image) error {
 	return nil
 }
 
+var ErrorClairServer = errors.New("clair server error")
+
 func (a *apiV1) pushLayer(layer *layer) error {
 	envelope := layerEnvelope{Layer: layer}
 	reqBody, err := json.Marshal(envelope)
@@ -72,7 +75,7 @@ func (a *apiV1) pushLayer(layer *layer) error {
 		if err != nil {
 			return fmt.Errorf("can't even read an error message: %s", err)
 		}
-		return fmt.Errorf("push error %d: %s", response.StatusCode, string(body))
+		return fmt.Errorf("push error %d: %s. %w", response.StatusCode, string(body), ErrorClairServer)
 	}
 	return nil
 }
